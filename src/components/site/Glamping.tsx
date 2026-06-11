@@ -5,7 +5,7 @@ import { Spiral } from "./Spiral";
 export function Glamping() {
   return (
     <section id="glamping" className="py-32 lg:py-48 bg-background relative overflow-hidden">
-      <Spiral className="absolute -top-24 -left-24 w-[420px] h-[420px] text-secondary" strokeWidth={0.8} />
+      <Spiral className="absolute -top-24 -left-24 w-[420px] h-[420px] text-secondary" />
 
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center relative">
         <Reveal className="lg:col-span-6 order-2 lg:order-1">
