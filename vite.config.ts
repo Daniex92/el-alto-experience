@@ -17,8 +17,5 @@ export default defineConfig({
 
   nitro: {
     preset: "static",
-    prerender: {
-      routes: ["/"],
-    },
   },
 });
