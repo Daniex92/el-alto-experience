@@ -12,7 +12,7 @@
 import { mkdir, writeFile, rm, cp, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
-const DIST_DIR = "./dist";
+const DIST_DIR = join(process.cwd(), "dist");
 const SERVER_ENTRY = join(DIST_DIR, "server", "index.mjs");
 const ASSETS_SRC = join(DIST_DIR, "client", "assets");
 const ASSETS_DST = join(DIST_DIR, "assets");
