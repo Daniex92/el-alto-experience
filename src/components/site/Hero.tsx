@@ -1,20 +1,53 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { hero, images } from "@/lib/site-content";
 import { Spiral } from "./Spiral";
 
 export function Hero() {
   const [y, setY] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const scrollYRef = useRef(0);
+  const lastUpdateRef = useRef(0);
+
   useEffect(() => {
-    const onScroll = () => setY(window.scrollY);
+    const onScroll = () => {
+      scrollYRef.current = window.scrollY;
+      
+      const now = performance.now();
+      // Throttle to ~60fps (16ms minimum between updates)
+      if (now - lastUpdateRef.current < 16) {
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(rafRef.current);
+        }
+        rafRef.current = requestAnimationFrame(() => {
+          setY(scrollYRef.current);
+          lastUpdateRef.current = performance.now();
+          rafRef.current = null;
+        });
+        return;
+      }
+
+      setY(scrollYRef.current);
+      lastUpdateRef.current = now;
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, []);
 
   return (
     <section id="top" className="relative h-screen min-h-[680px] w-full overflow-hidden bg-secondary">
       <div
         className="absolute inset-0 will-change-transform"
-        style={{ transform: `translate3d(0, ${y * 0.25}px, 0)` }}
+        style={{ 
+          transform: `translate3d(0, ${y * 0.25}px, 0)`,
+          contain: "layout style paint",
+          backfaceVisibility: "hidden",
+        }}
       >
         <img
           src={images.hero}
@@ -26,7 +59,6 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/85" />
       </div>
 
-      <Spiral className="absolute top-1/2 -right-32 w-[520px] h-[520px] text-primary/15 -translate-y-1/2 hidden md:block" />
 
       <div className="relative z-10 h-full mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col justify-end pb-24 lg:pb-32">
         <div className="max-w-3xl">

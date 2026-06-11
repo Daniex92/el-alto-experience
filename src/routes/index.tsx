@@ -12,6 +12,8 @@ import { Testimonials } from "@/components/site/Testimonials";
 import { Reservations } from "@/components/site/Reservations";
 import { Location } from "@/components/site/Location";
 import { Footer } from "@/components/site/Footer";
+import { logoFull } from "@/assets/logo-alto-svg.svg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({

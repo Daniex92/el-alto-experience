@@ -17,7 +17,6 @@ export function Philosophy() {
               className="w-full h-full object-cover"
             />
           </div>
-          <Spiral className="absolute -bottom-12 -right-12 w-40 h-40 text-primary/40" />
         </Reveal>
 
         <Reveal className="lg:col-span-6 lg:pl-10" delay={150}>

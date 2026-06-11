@@ -155,7 +155,7 @@ export const location = {
   ],
   phone: "+57 310 000 0000",
   email: "reservas@elalto.co",
-  mapsUrl: "https://www.google.com/maps?q=Ráquira+Boyacá+Colombia&output=embed",
+  mapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6678.670378332792!2d-73.62684280709408!3d5.543105579477089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e41d33c2f026395%3A0x42fc1f431fd5d330!2sEl%20Alto%20Cocina%20de%20Entorno!5e0!3m2!1ses-419!2sco!4v1781193737900!5m2!1ses-419!2sco",
 };
 
 export const social = [

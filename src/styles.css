@@ -45,7 +45,7 @@
 :root {
   /* Brand palette (oklch equivalents of the spec hex values) */
   --background: oklch(0.957 0.022 86);          /* #F4F0E5 */
-  --foreground: oklch(0.225 0.005 60);          /* #2A2927 */
+  --foreground: oklch(46.133% 0.09222 52.404);          /* #2A2927 */
 
   --secondary: oklch(0.905 0.028 86);           /* #E8DFC9 */
   --secondary-foreground: oklch(0.225 0.005 60);
