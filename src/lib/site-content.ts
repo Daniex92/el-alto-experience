@@ -2,9 +2,9 @@
  * Single source of truth for site copy and imagery.
  * Edit text here to update the entire site.
  */
-import hero from "@/assets/hero.jpg";
-import philosophy from "@/assets/philosophy.jpg";
-import environment from "@/assets/environment.jpg";
+import heroImg from "@/assets/hero.jpg";
+import philosophyImg from "@/assets/philosophy.jpg";
+import environmentImg from "@/assets/environment.jpg";
 import expSeasonal from "@/assets/exp-seasonal.jpg";
 import expCocktails from "@/assets/exp-cocktails.jpg";
 import expPairings from "@/assets/exp-pairings.jpg";
@@ -12,15 +12,15 @@ import dish1 from "@/assets/dish-1.jpg";
 import dish2 from "@/assets/dish-2.jpg";
 import dish3 from "@/assets/dish-3.jpg";
 import dish4 from "@/assets/dish-4.jpg";
-import events from "@/assets/events.jpg";
-import glamping from "@/assets/glamping.jpg";
-import catering from "@/assets/catering.jpg";
+import eventsImg from "@/assets/events.jpg";
+import glampingImg from "@/assets/glamping.jpg";
+import cateringImg from "@/assets/catering.jpg";
 import logo from "@/assets/logo-el-alto.png";
 
 export const images = {
-  hero,
-  philosophy,
-  environment,
+  hero: heroImg,
+  philosophy: philosophyImg,
+  environment: environmentImg,
   expSeasonal,
   expCocktails,
   expPairings,
@@ -28,9 +28,9 @@ export const images = {
   dish2,
   dish3,
   dish4,
-  events,
-  glamping,
-  catering,
+  events: eventsImg,
+  glamping: glampingImg,
+  catering: cateringImg,
   logo,
 };
 
