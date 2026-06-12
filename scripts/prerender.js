@@ -1,55 +1,88 @@
 /**
- * Post-build prerender script for static hosting (GitHub Pages).
+ * Post-build prerender script for static hosting (Hostinger, GitHub Pages, Netlify, etc.).
  *
- * This script:
- * 1. Imports the Nitro server bundle generated during `vite build`
- * 2. Makes a request to the root route to get the SSR HTML
- * 3. Writes the HTML to `dist/index.html`
- * 4. Moves client assets to `dist/assets/` so paths align with `base: "/el-alto-experience/"`
- * 5. Cleans up server-only files that are not needed for static hosting
+ * Steps:
+ *  1. Locate the SSR server bundle produced by Nitro (node-server preset).
+ *  2. Invoke its fetch handler against "/" to obtain fully rendered HTML.
+ *  3. Move client assets from dist/client/assets -> dist/assets.
+ *  4. Write dist/index.html.
+ *  5. Remove server-only artifacts so dist/ is 100% static.
  */
 
-import { mkdir, writeFile, rm, cp, readdir } from "node:fs/promises";
+import { writeFile, rm, cp, readdir, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const DIST_DIR = join(process.cwd(), "dist");
-const SERVER_ENTRY = join(DIST_DIR, "server", "index.mjs");
-const ASSETS_SRC = join(DIST_DIR, "client", "assets");
-const ASSETS_DST = join(DIST_DIR, "assets");
+const CLIENT_ASSETS = join(DIST_DIR, "client", "assets");
+const PUBLIC_ASSETS = join(DIST_DIR, "assets");
 const HTML_DST = join(DIST_DIR, "index.html");
 
-async function prerender() {
-  console.log("[prerender] Starting static generation...");
+async function findServerEntry() {
+  const candidates = [
+    join(DIST_DIR, "server", "index.mjs"),
+    join(DIST_DIR, "server", "server.mjs"),
+    join(DIST_DIR, "index.mjs"),
+    join(DIST_DIR, "_worker.js", "index.js"),
+  ];
+  for (const p of candidates) {
+    if (existsSync(p)) return p;
+  }
+  throw new Error(
+    "Could not locate SSR server entry in dist/. Looked at:\n  " +
+      candidates.join("\n  "),
+  );
+}
 
-  // 1. Import the server bundle
-  const mod = await import(SERVER_ENTRY);
+async function prerender() {
+  console.log("[prerender] Locating server entry...");
+  const entry = await findServerEntry();
+  console.log("[prerender] Using:", entry);
+
+  const mod = await import(pathToFileURL(entry).href);
   const server = mod.default || mod;
 
-  const mockContext = {
-    waitUntil: () => {},
-    passThroughOnException: () => {},
-  };
-
-  // 2. Request the root route (aligned with router basepath)
-  const request = new Request("http://localhost/el-alto-experience/");
-  const response = await server.fetch(request, {}, mockContext);
-
-  if (!response.ok) {
-    throw new Error(`Server returned ${response.status}: ${await response.text()}`);
+  if (typeof server.fetch !== "function") {
+    throw new Error("Server bundle does not expose a fetch() handler.");
   }
 
-  let html = await response.text();
+  const request = new Request("http://localhost/");
+  const response = await server.fetch(request, {}, {
+    waitUntil: () => {},
+    passThroughOnException: () => {},
+  });
 
-  // 3. Move assets from dist/client/assets to dist/assets
-  await rm(ASSETS_DST, { recursive: true, force: true });
-  await cp(ASSETS_SRC, ASSETS_DST, { recursive: true });
-  console.log("[prerender] Assets copied to dist/assets/");
+  if (!response.ok) {
+    throw new Error(
+      `Server returned ${response.status}: ${await response.text()}`,
+    );
+  }
 
-  // 4. Write the prerendered HTML
+  const html = await response.text();
+
+  if (existsSync(CLIENT_ASSETS)) {
+    await rm(PUBLIC_ASSETS, { recursive: true, force: true });
+    await cp(CLIENT_ASSETS, PUBLIC_ASSETS, { recursive: true });
+    console.log("[prerender] Copied client assets -> dist/assets/");
+  }
+
+  // Also copy any non-asset files (favicons, robots.txt, etc.) from dist/client
+  const clientDir = join(DIST_DIR, "client");
+  if (existsSync(clientDir)) {
+    const entries = await readdir(clientDir);
+    for (const name of entries) {
+      if (name === "assets") continue;
+      const src = join(clientDir, name);
+      const dst = join(DIST_DIR, name);
+      const s = await stat(src);
+      await cp(src, dst, { recursive: s.isDirectory() });
+    }
+  }
+
   await writeFile(HTML_DST, html);
-  console.log("[prerender] Written dist/index.html");
+  console.log("[prerender] Wrote dist/index.html");
 
-  // 5. Clean up server-only artifacts not needed for static hosting
   const toRemove = [
     join(DIST_DIR, "server"),
     join(DIST_DIR, "client"),
@@ -57,21 +90,18 @@ async function prerender() {
     join(DIST_DIR, "package.json"),
     join(DIST_DIR, "package-lock.json"),
     join(DIST_DIR, "wrangler.json"),
+    join(DIST_DIR, "_worker.js"),
   ];
-
   for (const p of toRemove) {
     await rm(p, { recursive: true, force: true });
   }
-  console.log("[prerender] Cleaned up server artifacts");
+  console.log("[prerender] Cleaned server artifacts");
 
-  // 6. Verify final structure
-  const files = await readdir(DIST_DIR, { recursive: true });
+  const final = await readdir(DIST_DIR, { recursive: true });
   console.log("[prerender] Final dist/ contents:");
-  for (const f of files.sort()) {
-    console.log("  -", f);
-  }
+  for (const f of final.sort()) console.log("  -", f);
 
-  console.log("[prerender] Static generation complete!");
+  console.log("[prerender] Done. Upload the dist/ folder to Hostinger.");
 }
 
 prerender().catch((err) => {
