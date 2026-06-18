@@ -50,16 +50,21 @@ export function Navbar() {
         </a>
 
         <button
-          aria-label="Abrir menú"
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
+          aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="lg:hidden flex flex-col gap-1.5 p-2"
+          className={`lg:hidden relative z-[60] flex flex-col items-center justify-center gap-1.5 w-11 h-11 rounded-full border transition-colors ${
+            scrolled || open
+              ? "bg-background/90 border-border text-foreground"
+              : "bg-black/40 backdrop-blur-sm border-white/30 text-white"
+          }`}
         >
           <span
-            className={`w-6 h-px bg-foreground transition-transform ${open ? "translate-y-[7px] rotate-45" : ""}`}
+            className={`block w-5 h-[2px] bg-current rounded transition-transform duration-300 ${open ? "translate-y-[7px] rotate-45" : ""}`}
           />
-          <span className={`w-6 h-px bg-foreground transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`block w-5 h-[2px] bg-current rounded transition-opacity duration-300 ${open ? "opacity-0" : ""}`} />
           <span
-            className={`w-6 h-px bg-foreground transition-transform ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
+            className={`block w-5 h-[2px] bg-current rounded transition-transform duration-300 ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
           />
         </button>
       </div>
