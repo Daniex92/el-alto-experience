@@ -56,31 +56,31 @@ export function Hero() {
           height={1280}
           className="w-full h-[120%] object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/85" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/85" />
       </div>
 
 
       <div className="relative z-10 h-full mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col justify-end pb-24 lg:pb-32">
-        <div className="max-w-3xl">
-          <p className="eyebrow text-primary mb-6 reveal revealed">{hero.eyebrow}</p>
-          <h1 className="display-serif text-[clamp(3.5rem,9vw,9rem)] text-foreground mb-8">
+        <div className="max-w-3xl [text-shadow:0_2px_24px_rgba(0,0,0,0.55)]">
+          <p className="eyebrow text-primary mb-6 reveal revealed drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">{hero.eyebrow}</p>
+          <h1 className="display-serif text-[clamp(3.5rem,9vw,9rem)] text-white mb-8">
             {hero.title}
           </h1>
-          <span className="hairline mb-8" />
-          <p className="max-w-xl text-lg lg:text-xl leading-relaxed text-foreground/85 mb-10">
+          <span className="hairline mb-8 !bg-white/60" />
+          <p className="max-w-xl text-lg lg:text-xl leading-relaxed text-white/90 mb-10">
             {hero.body}
           </p>
           <div className="flex flex-wrap gap-4">
             <a
               href={hero.primaryCta.href}
-              className="eyebrow inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 hover:bg-accent transition-colors"
+              className="eyebrow inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 hover:bg-accent transition-colors shadow-lg"
             >
               {hero.primaryCta.label}
               <span aria-hidden>→</span>
             </a>
             <a
               href={hero.secondaryCta.href}
-              className="eyebrow inline-flex items-center gap-3 text-foreground border-b border-foreground/40 hover:border-primary hover:text-primary pb-2 transition-colors px-1"
+              className="eyebrow inline-flex items-center gap-3 text-white border-b border-white/60 hover:border-primary hover:text-primary pb-2 transition-colors px-1"
             >
               {hero.secondaryCta.label}
             </a>
@@ -89,8 +89,8 @@ export function Hero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3">
-        <span className="eyebrow text-foreground/60 text-[10px]">Scroll</span>
-        <span className="w-px h-12 bg-foreground/40 animate-pulse" />
+        <span className="eyebrow text-white/80 text-[10px]">Scroll</span>
+        <span className="w-px h-12 bg-white/60 animate-pulse" />
       </div>
     </section>
   );
