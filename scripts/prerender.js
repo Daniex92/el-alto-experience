@@ -59,7 +59,17 @@ async function prerender() {
     );
   }
 
-  const html = await response.text();
+  let html = await response.text();
+
+  // ---- Stripping JS for a fully static HTML output ----
+  // Remove all <script ...>...</script> tags (hydration bundle, modulepreload, etc.)
+  html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  // Remove <link rel="modulepreload"> and <link rel="preload" as="script">
+  html = html.replace(
+    /<link\b[^>]*rel=["']?(?:modulepreload|preload)["']?[^>]*>/gi,
+    (tag) => (/as=["']?script["']?|modulepreload/i.test(tag) ? "" : tag),
+  );
+  console.log("[prerender] Stripped client JS for static-only output");
 
   if (existsSync(CLIENT_ASSETS)) {
     await rm(PUBLIC_ASSETS, { recursive: true, force: true });
